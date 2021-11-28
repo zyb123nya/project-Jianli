@@ -233,6 +233,6 @@ Combobox_Time_year_second.grid(row=10,column=3)
 label_Degree.grid(row=11,column=0)
 Combobox_Degree.grid(row=11,column=1)
 
-button_next.grid(row=12,column=5)#按钮还没写好
+button_next.grid(row=12,column=5)#按钮还没写切换界面
 
 window.mainloop()
