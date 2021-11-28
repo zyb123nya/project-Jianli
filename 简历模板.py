@@ -4,9 +4,9 @@ import calendar
 import numpy as np
 import tkinter as tk
 import pandas as pd
-
+from tkinter.messagebox import *
 from tkinter import filedialog
-
+from tkinter import messagebox
 #一些函数要用到的
 yy = []
 for i in range(1970,2050):
@@ -36,7 +36,7 @@ list_National=('蒙古族','回族','藏族','维吾尔族','苗族','彝族','�
 list_Degree=("中专","初中","高中","专科","本科","硕士","博士")
 #构建GUI框架容器、标题、初始分辨率
 window = tk.Tk()
-window.title("个人简历模板")
+window.title("个人简历模板基本信息部分")
 window.geometry("500x500")
 
 
@@ -50,7 +50,7 @@ def read_text():
 
 
 v= IntVar()
-v.set(1)
+# v.set(1)
 button_sex_male = tk.Radiobutton(window,text="男",variable=v,value=1,command=read_text)
 button_sex_female = tk.Radiobutton(window,text="女",variable=v,value=2,command=read_text)
 
@@ -68,12 +68,13 @@ def read_Pol_text():
     if p.get() == 2:
         textbox_Politic_get = '中共党员'
 p = IntVar()
-p.set(0)
+p.set(" ")
 button_Politic_People = tk.Radiobutton(window,text='群众',variable=p,value=0,command=read_Pol_text)
 button_Politic_Komsomolets = tk.Radiobutton(window,text='共青团员',variable=p,value=1,command=read_Pol_text)
 button_Politic_Communist = tk.Radiobutton(window,text='中共党员',variable=p,value=2,command=read_Pol_text) 
 
 def add():
+    global window
     # 通过get()函数获得Text（input_txt）的输入内容
 
     textbox_Name_get = textbox_Name.get("1.0","end")
@@ -89,7 +90,7 @@ def add():
     Combobox_Time_year_second_get = Time_year_second.get()
     Combobox_Degree_get = Degree.get()
    # button_Politic_People_get = button_Politic_People.get("1.0","end")
-    h = open('mytxtfile.txt', 'a+', encoding='utf-8')
+    h = open('mytxtfile.txt', 'w', encoding='utf-8')
     h.write(
     label_Name.cget("text") +':' +
     textbox_Name_get + '\n' + 
@@ -128,6 +129,9 @@ def add():
     Combobox_Degree_get
     ) #添加到文件夹中的txt
     h.close()
+    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘继续填写。')
+    print(f'提示: {result}')
+    window.destroy()
 
 button_next = tk.Button(text="下一步",command=add)
 
@@ -153,9 +157,9 @@ label_National = tk.Label(window,text="民族")
 label_Phonenum = tk.Label(window,text="联系方式")
 label_Politic = tk.Label(window,text="政治面貌")
 label_Birth = tk.Label(window,text="出生年月")
-#label_Professal缺数据
+#label_Professal缺数据，改为手动填写
 label_Professal = tk.Label(window,text="专业")
-#label_School缺数据
+#label_School缺数据,改为手动填写
 label_School = tk.Label(window,text="就读学校")
 label_Time = tk.Label(window,text="就读时间")
 label_pass = tk.Label(window,text='至')#这个没啥用，占位而已
@@ -235,4 +239,74 @@ Combobox_Degree.grid(row=11,column=1)
 
 button_next.grid(row=12,column=5)#按钮还没写切换界面
 
+
+
 window.mainloop()
+def del_add02():
+    textbox_Feature_get = textbox_Feature.get("1.0","end")
+    h = open('mytxtfile.txt', 'a+', encoding='utf-8')
+    h.write(
+    label_Feature.cget("text") +'\n' +
+    textbox_Feature_get + '\n'
+    ) #添加到文件夹中的txt
+    h.close()
+    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘继续填写。')
+    print(f'提示: {result}')
+    window02.destroy()
+window02 = tk.Tk()
+window02.title("个人简历模板个人特点")
+window02.geometry("500x500")
+label_Feature = tk.Label(window02,text="个人特点：")
+textbox_Feature = tk.Text(window02,height=10,width=40)
+button_next_02 = tk.Button(text="下一步",command=del_add02)
+
+label_Feature.grid(row=0,column=0)
+textbox_Feature.grid(row=1,column=0)
+button_next_02.grid(row=1,column=1)
+window02.mainloop()
+
+def del_add03():
+    textbox_ProjectHistory_get = textbox_ProjectHistory.get("1.0","end")
+    h = open('mytxtfile.txt', 'a+', encoding='utf-8')
+    h.write('\n'+
+    label_ProjectHistory.cget("text") +'\n' +
+    textbox_ProjectHistory_get + '\n'
+    ) #添加到文件夹中的txt
+    h.close()
+    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘继续填写。')
+    print(f'提示: {result}')
+    window03.destroy()
+window03 = tk.Tk()
+window03.title("个人简历模板项目经历")
+window03.geometry("500x500")
+label_ProjectHistory= tk.Label(window03,text="项目经历：")
+textbox_ProjectHistory= tk.Text(window03,height=10,width=40)
+button_next_03 = tk.Button(text="下一步",command=del_add03)
+
+label_ProjectHistory.grid(row=0,column=0)
+textbox_ProjectHistory.grid(row=1,column=0)
+button_next_03.grid(row=1,column=1)
+
+window03.mainloop()
+
+def del_add04():
+    textbox_PersonalAbility_get = textbox_PersonalAbility.get("1.0","end")
+    h = open('mytxtfile.txt', 'a+', encoding='utf-8')
+    h.write(
+    label_PersonalAbility.cget("text") +'\n' +
+    textbox_PersonalAbility_get + '\n'
+    ) #添加到文件夹中的txt
+    h.close()
+    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘结束。')
+    print(f'提示: {result}')
+    window04.destroy()
+window04 = tk.Tk()
+window04.title("个人简历模板个人能力")
+window04.geometry("500x500")
+label_PersonalAbility = tk.Label(window04,text="个人能力：")
+textbox_PersonalAbility = tk.Text(window04,height=10,width=40)
+button_next_04 = tk.Button(text="下一步",command=del_add04)
+label_PersonalAbility.grid(row=0,column=0)
+textbox_PersonalAbility.grid(row=1,column=0)
+button_next_04.grid(row=1,column=1)
+window04.mainloop()
