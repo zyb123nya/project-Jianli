@@ -1,12 +1,15 @@
 from tkinter  import *
 from tkinter import ttk
-import calendar
 import numpy as np
 import tkinter as tk
 import pandas as pd
 from tkinter.messagebox import *
 from tkinter import filedialog
 from tkinter import messagebox
+import tkinter.filedialog
+from PIL import Image
+from PIL import ImageTk
+ 
 #一些函数要用到的
 yy = []
 for i in range(1970,2050):
@@ -37,7 +40,7 @@ list_Degree=("中专","初中","高中","专科","本科","硕士","博士")
 #构建GUI框架容器、标题、初始分辨率
 window = tk.Tk()
 window.title("个人简历模板基本信息部分")
-window.geometry("500x500")
+window.geometry("1000x1000")
 
 
 #RadioButton part & 初始化默认选择
@@ -47,8 +50,6 @@ def read_text():
         textbox_sex_get = '男'
     if v.get() == 2:
         textbox_sex_get = '女'
-
-
 v= IntVar()
 # v.set(1)
 button_sex_male = tk.Radiobutton(window,text="男",variable=v,value=1,command=read_text)
@@ -76,11 +77,10 @@ button_Politic_Communist = tk.Radiobutton(window,text='中共党员',variable=p,
 def add():
     global window
     # 通过get()函数获得Text（input_txt）的输入内容
-
     textbox_Name_get = textbox_Name.get("1.0","end")
     textbox_Age_get = textbox_Age.get("1.0","end")
     textbox_Phonenum_get = textbox_Phonenum.get("1.0","end")
-    textbox_School_get = textbox_School.get("1.0","end")
+    textbox_School_get = textbox_School.get()
     textbox_Professal_get = textbox_Professal.get("1.0","end")
     Combobox_Address_get = Address.get()
     Combobox_National_get = National.get()
@@ -122,18 +122,15 @@ def add():
     label_Birth.cget("text") +':' +
     Combobox_Birth_year_get + '.'+ Combobox_Birth_month_get +'\n' +
 
-    label_Time.cget("text") +':' +
-    Combobox_Time_year_get + '-' + Combobox_Time_year_second_get +'\n' +
-
     label_Degree.cget("text") +':' +
     Combobox_Degree_get
     ) #添加到文件夹中的txt
     h.close()
-    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘继续填写。')
+    result = showinfo('提示', '所填写内容已经保存至mytxtfile.pdf文件内。')
     print(f'提示: {result}')
     window.destroy()
 
-button_next = tk.Button(text="下一步",command=add)
+button_next = tk.Button(text="生成",command=add)
 
 # button_next =filedialog.askopenfilename()
 
@@ -141,31 +138,37 @@ button_next = tk.Button(text="下一步",command=add)
  
 
 
-
+school = tk.StringVar()
 #textbox part
 textbox_Name = tk.Text(window,height=1,width=15)
 textbox_Age = tk.Text(window,height=1,width=15)
 textbox_Phonenum = tk.Text(window,height=1,width=15)
-textbox_School = tk.Text(window,height=1,width=20)
+textbox_School = tk.Entry(window,width=15,textvariable=school)
 textbox_Professal = tk.Text(window,height=1,width=15)
+textbox_School_2 = tk.Entry(window,width=15,textvariable=school)
+
+textbox_Education = tk.Text(window,height=3,width=15)
+textbox_Honor = tk.Text(window,height=3,width=15)
+textbox_Selfass = tk.Text(window,height=3,width=15)
 #label part
 label_Name = tk.Label(window,text="姓名")
 label_Age = tk.Label(window,text="年龄")
 label_Sex = tk.Label(window,text="性别")
-label_Address = tk.Label(window,text="现居住地")
+label_Address = tk.Label(window,text="籍贯")
 label_National = tk.Label(window,text="民族")
-label_Phonenum = tk.Label(window,text="联系方式")
+label_Phonenum = tk.Label(window,text="联系电话")
 label_Politic = tk.Label(window,text="政治面貌")
 label_Birth = tk.Label(window,text="出生年月")
 #label_Professal缺数据，改为手动填写
 label_Professal = tk.Label(window,text="专业")
 #label_School缺数据,改为手动填写
-label_School = tk.Label(window,text="就读学校")
+label_School = tk.Label(window,text="毕业学校")
 label_Time = tk.Label(window,text="就读时间")
 label_pass = tk.Label(window,text='至')#这个没啥用，占位而已
 label_Degree = tk.Label(window,text="学历")
-
-
+label_Education = tk.Label(window,text="教育背景")
+label_Honor = tk.Label(window,text="校内荣誉")
+label_Selfass = tk.Label(window,text="自我评价")
 # xVariable = tk.StringVar()
 #Combobox Part
 Address = tk.StringVar()
@@ -179,134 +182,102 @@ Combobox_Address = ttk.Combobox(window,width=12,height=10,textvariable=Address)
 Combobox_National = ttk.Combobox(window,width=12,height=10,textvariable=National)
 Combobox_Birth_year = ttk.Combobox(window,width=12,height=10,textvariable=Birth_year) 
 Combobox_Birth_month = ttk.Combobox(window,width=12,height=10,textvariable=Birth_month) 
-Combobox_Time_year = ttk.Combobox(window,width=12,height=10,textvariable=Time_year)
-Combobox_Time_year_second = ttk.Combobox(window,width=12,height=10,textvariable=Time_year_second)
 Combobox_Degree = ttk.Combobox(window,width=12,height=10,textvariable=Degree)
+label_degree = tk.Label(window,textvariable=Degree)
+Combobox_Time_year = ttk.Combobox(window,width=12,height=10,textvariable=Time_year)
+Combobox_Time_year_2 = ttk.Combobox(window,width=12,height=10)
 #Combox data,可以进阶挂sql
 #各个combobox的数据
 Combobox_Address["value"] = city
 Combobox_National["value"] = list_National
 Combobox_Birth_year['value'] = yy
 Combobox_Birth_month['value'] = mm
-Combobox_Time_year['value'] = yy
-Combobox_Time_year_second['value'] = yy
 Combobox_Degree['value'] = list_Degree
+Combobox_Time_year['value'] = yy
+Combobox_Time_year_2['value']=yy
+def showing():
+    global window
+    e = tkinter.StringVar()
+    selectFileName = tkinter.filedialog.askopenfilename(title='选择文件')  # 选择文件
+    e.set(selectFileName)
 
+    load = Image.open(e.get())  # open image from path
+    load = load.resize((150,225))
+    img = ImageTk.PhotoImage(load)           # read opened image
+ 
+    label1=tk.Label(window,image=img)      # create a label to insert this image
+    label1.grid(row=2,column=4)  
+    window.mainloop()
+submit_button = tk.Button(window, text ="显示图片", command = showing)
+
+
+def add_label():
+    global textbox_Honor
+    result=textbox_Honor.get("1.0","end")+Time_year.get()
+    label_temp=tk.Label(window,text=result)
+    label_temp.grid()
+    
+
+plus = Image.open('plus.png')
+  
+# 调整图片尺寸适应按钮大小
+plus = plus.resize((30,30))
+plus = ImageTk.PhotoImage(plus)  
+button_addlabel = tk.Button(window,image=plus,command=add_label)
 
 
 #grid 布局
 label_Name.grid(row=0,column=0)
 textbox_Name.grid(row=0,column=1)
+label_Age.grid(row=0,column=2)
+textbox_Age.grid(row=0,column=3)
 
-label_Age.grid(row=1,column=0)
-textbox_Age.grid(row=1,column=1)
+
+label_Birth.grid(row=1,column=0)
+Combobox_Birth_year.grid(row=1,column=1)
+Combobox_Birth_month.grid(row=1,column=2)
+label_National.grid(row=1,column=3)
+Combobox_National.grid(row=1,column=4)
 
 label_Sex.grid(row=2,column=0)
 button_sex_male.grid(row=2,column=1)
 button_sex_female.grid(row=2,column=2)
+submit_button.grid(row=2,column=3)
 
 label_Address.grid(row=3,column=0)
 Combobox_Address.grid(row=3,column=1)
 
-label_National.grid(row=4,column=0)
-Combobox_National.grid(row=4,column=1)
+label_School.grid(row=4,column=0)
+textbox_School.grid(row=4,column=1)
+label_Degree.grid(row=4,column=2)
+Combobox_Degree.grid(row=4,column=3)
+
 
 label_Phonenum.grid(row=5,column=0)
 textbox_Phonenum.grid(row=5,column=1)
+label_Professal.grid(row=5,column=2)
+textbox_Professal.grid(row=5,column=3)
 
 label_Politic.grid(row=6,column=0)
 button_Politic_People.grid(row=6,column=1)
 button_Politic_Komsomolets.grid(row=6,column=2)
 button_Politic_Communist.grid(row=6,column=3)
 
-label_Birth.grid(row=7,column=0)
-Combobox_Birth_year.grid(row=7,column=1)
-Combobox_Birth_month.grid(row=7,column=2)
+label_Education.grid(row=7,column=0)
+Combobox_Time_year_2.grid(row=7,column=1)
+textbox_School_2.grid(row=7,column=2)
+label_degree.grid(row=7,column=3)
 
-label_Professal.grid(row=8,column=0)
-textbox_Professal.grid(row=8,column=1)
+label_Honor.grid(row=8,column=0)
+Combobox_Time_year.grid(row=8,column=1)
+textbox_Honor.grid(row=8,column=2)
+button_addlabel.grid(row=8,column=3)
 
-label_School.grid(row=9,column=0)
-textbox_School.grid(row=9,column=1)
-
-label_Time.grid(row=10,column=0)
-Combobox_Time_year.grid(row=10,column=1)
-label_pass.grid(row=10,column=2)
-Combobox_Time_year_second.grid(row=10,column=3)
-
-label_Degree.grid(row=11,column=0)
-Combobox_Degree.grid(row=11,column=1)
+label_Selfass.grid(row=11,column=0)
+textbox_Selfass.grid(row=11,column=1)
 
 button_next.grid(row=12,column=5)#按钮还没写切换界面
 
 
 
 window.mainloop()
-def del_add02():
-    textbox_Feature_get = textbox_Feature.get("1.0","end")
-    h = open('mytxtfile.txt', 'a+', encoding='utf-8')
-    h.write(
-    label_Feature.cget("text") +'\n' +
-    textbox_Feature_get + '\n'
-    ) #添加到文件夹中的txt
-    h.close()
-    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘继续填写。')
-    print(f'提示: {result}')
-    window02.destroy()
-window02 = tk.Tk()
-window02.title("个人简历模板个人特点")
-window02.geometry("500x500")
-label_Feature = tk.Label(window02,text="个人特点：")
-textbox_Feature = tk.Text(window02,height=10,width=40)
-button_next_02 = tk.Button(text="下一步",command=del_add02)
-
-label_Feature.grid(row=0,column=0)
-textbox_Feature.grid(row=1,column=0)
-button_next_02.grid(row=1,column=1)
-window02.mainloop()
-
-def del_add03():
-    textbox_ProjectHistory_get = textbox_ProjectHistory.get("1.0","end")
-    h = open('mytxtfile.txt', 'a+', encoding='utf-8')
-    h.write('\n'+
-    label_ProjectHistory.cget("text") +'\n' +
-    textbox_ProjectHistory_get + '\n'
-    ) #添加到文件夹中的txt
-    h.close()
-    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘继续填写。')
-    print(f'提示: {result}')
-    window03.destroy()
-window03 = tk.Tk()
-window03.title("个人简历模板项目经历")
-window03.geometry("500x500")
-label_ProjectHistory= tk.Label(window03,text="项目经历：")
-textbox_ProjectHistory= tk.Text(window03,height=10,width=40)
-button_next_03 = tk.Button(text="下一步",command=del_add03)
-
-label_ProjectHistory.grid(row=0,column=0)
-textbox_ProjectHistory.grid(row=1,column=0)
-button_next_03.grid(row=1,column=1)
-
-window03.mainloop()
-
-def del_add04():
-    textbox_PersonalAbility_get = textbox_PersonalAbility.get("1.0","end")
-    h = open('mytxtfile.txt', 'a+', encoding='utf-8')
-    h.write(
-    label_PersonalAbility.cget("text") +'\n' +
-    textbox_PersonalAbility_get + '\n'
-    ) #添加到文件夹中的txt
-    h.close()
-    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内，请点击’确定‘结束。')
-    print(f'提示: {result}')
-    window04.destroy()
-window04 = tk.Tk()
-window04.title("个人简历模板个人能力")
-window04.geometry("500x500")
-label_PersonalAbility = tk.Label(window04,text="个人能力：")
-textbox_PersonalAbility = tk.Text(window04,height=10,width=40)
-button_next_04 = tk.Button(text="下一步",command=del_add04)
-label_PersonalAbility.grid(row=0,column=0)
-textbox_PersonalAbility.grid(row=1,column=0)
-button_next_04.grid(row=1,column=1)
-window04.mainloop()
