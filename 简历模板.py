@@ -12,6 +12,7 @@ from PIL import Image
 from PIL import ImageTk
  
 import webbrowser
+GEN_HTML = "test.html" 
 
 #一些函数要用到的
 yy = []
@@ -90,6 +91,7 @@ button_Politic_Communist = tk.Radiobutton(window,text='中共党员',variable=p,
 textbox_Name = tk.Text(window,height=1,width=15)
 textbox_Age = tk.Text(window,height=1,width=15)
 textbox_Phonenum = tk.Text(window,height=1,width=15)
+# textbox_Phonenum_get = textbox_Phonenum("1.0","end")
 textbox_School = tk.Entry(window,width=15,textvariable=school)
 textbox_Professal = tk.Text(window,height=1,width=15)
 textbox_want = tk.Text(window,width=15,height=1)
@@ -97,7 +99,7 @@ textbox_School_2 = tk.Entry(window,width=15,textvariable=school,state='readonly'
 
 textbox_Education = tk.Text(window,height=3,width=15)
 textbox_Honor = tk.Entry(window,width=15)
-
+ 
 textbox_Selfass = tk.Text(window,height=3,width=15)
 #label part
 label_Name = tk.Label(window,text="姓名")
@@ -143,6 +145,9 @@ Combobox_Time_year['value'] = yy
 Combobox_Time_year_2['value']=yy
 def showing():
     global window
+    global e
+    global selectFileName
+    global img
     e = tkinter.StringVar()
     selectFileName = tkinter.filedialog.askopenfilename(title='选择文件')  # 选择文件
     e.set(selectFileName)
@@ -159,7 +164,7 @@ submit_button = tk.Button(window, text ="显示图片", command = showing)
 
 def add_label():
     global textbox_Honor
-    result=textbox_Honor.get("1.0","end")+Time_year.get()
+    result=textbox_Honor.get()+Time_year.get()
     label_temp=tk.Label(window,text=result)
     label_temp.grid()
     
@@ -176,10 +181,14 @@ def add():
     global window
     # 通过get()函数获得Text（input_txt）的输入内容
     textbox_Name_get = textbox_Name.get("1.0","end")
-    textbox_Age_get = textbox_Age.get("1.0","end")
+    label_Name_get = label_Name.cget("text")
+    label_Sex_get = label_Sex.cget("text")
+    # textbox_Age_get = textbox_Age.get("1.0","end")
     textbox_Phonenum_get = textbox_Phonenum.get("1.0","end")
     textbox_School_get = textbox_School.get()
     textbox_Professal_get = textbox_Professal.get("1.0","end")
+    textbox_Honor_get = textbox_Honor.get()+Time_year.get()
+    textbox_Selfass_get = textbox_Selfass.get("1.0","end")
     Combobox_Address_get = Address.get()
     Combobox_National_get = National.get()
     Combobox_Birth_year_get = Birth_year.get()
@@ -213,6 +222,95 @@ def add():
     label_want.cget('text') + ':' +
     textbox_want_get +'\n'
     ) #添加到文件夹中的txt
+    
+    f = open(GEN_HTML,'w',encoding='utf-8')
+    message = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>我的简历</title>
+        <style>
+            table{
+                border-collapse: collapse;
+            }
+            table,td.th{
+                border: 1px solid blue;
+            }
+            
+                a:link {text-decoration:none};
+                a:hover {color:#FF00FF;}
+        </style>
+            <body>
+                <table width="700" height="500" border="1" background="img/bacg.jpg" align="center">
+                    
+    <caption><h3>个人简历</h3></caption>
+    <tr>
+        <td width="90">姓名</td>
+        <td width="100">%s</td>
+        <td width="89">出生日期</td>
+        <td width="113">%s.%s</td>
+        <td width="91">性别</td>
+        <td width="48">%s</td>
+        <td width="121" rowspan="4" 
+        ><img src="%s" width="150px"/></td>
+    </tr>
+    <tr>
+        <td>学历</td>
+        <td>%s</td>
+        <td>专业</td>
+        <td>%s</td>
+        <td>民族</td>
+        <td>%s</td>
+    </tr>
+    <tr>
+        <td>学校</td>
+        <td>%s</td>
+        <td>政治面貌</td>
+        <td>%s</td>
+        <td>联系方式</td>
+        <td>%s</td>
+    </tr>
+    <tr>
+        <td>籍贯</td>
+        <td>%s</td>
+        <td>求职意向</td>
+        <td>%s</td>
+    </tr>
+    <tr height="100">
+        <td>教育背景</td>
+       <td colspan="6">
+           %s
+       </td>
+    </tr>
+    <tr>
+        <td>校内荣誉</td>
+        <td colspan="6">
+            <ul>
+                <li>%s</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="7" align="center"><b>自我评价</b></td>
+    </tr>
+    <tr>
+        <td colspan="7" height="200">
+            %s
+        </td>
+    </tr>
+</table>
+        </body>
+    </head>
+</html>
+    """%(textbox_Name_get,Combobox_Birth_year_get,Combobox_Birth_month_get,textbox_sex_get,
+        selectFileName,Combobox_Degree_get,textbox_Professal_get,Combobox_National_get,
+        textbox_School_get,textbox_Politic_get,textbox_Phonenum_get,Combobox_Address_get,
+        textbox_want_get,textbox_School_get,textbox_Honor_get,textbox_Selfass_get
+        )
+    f.write(message)
+
+    webbrowser.open(GEN_HTML,new = 1) 
     h.close()
     result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内。')
     print(f'提示: {result}')
@@ -275,7 +373,20 @@ button_addlabel.grid(row=9,column=3)
 label_Selfass.grid(row=11,column=0)
 textbox_Selfass.grid(row=11,column=1)
 
-button_next.grid(row=12,column=5)#按钮,等待pdf
+button_next.grid(row=12,column=5)#按钮,等待hmtl
 label_tip1.grid(row=12,column=0)
 window.mainloop()
+
+# textbox_Name_get = textbox_Name.get("1.0","end")
+# # textbox_Age_get = textbox_Age.get("1.0","end")
+# # textbox_Phonenum_get = textbox_Phonenum.get("1.0","end")
+# textbox_School_get = textbox_School.get()
+# textbox_Professal_get = textbox_Professal.get("1.0","end")
+# Combobox_Address_get = Address.get()
+# Combobox_National_get = National.get()
+# # Combobox_Birth_year_get = Birth_year.get()
+# # Combobox_Birth_month_get = Birth_month.get()
+# Combobox_Degree_get = Degree.get()
+# textbox_want_get = textbox_want.get("1.0","end")
+# # button_Politic_People_get = button_Politic_People.get("1.0","end")
 
