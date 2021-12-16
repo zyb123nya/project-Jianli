@@ -10,10 +10,16 @@ from tkinter import messagebox
 import tkinter.filedialog
 from PIL import Image
 from PIL import ImageTk
- 
-import webbrowser
-GEN_HTML = "test.html" 
+from ttkbootstrap import Style
+import tkinter.font as tkFont
 
+import webbrowser
+GEN_HTML = "profile.html" 
+# from ttkbootstrap import Style
+# style = Style()
+# style = Style(theme='sandstone')
+#想要切换主题，修改theme值即可，有以下这么多的主题，自己尝试吧：['vista', 'classic', 'cyborg', 'journal', 'darkly', 'flatly', 'clam', 'alt', 'solar', 'minty', 'litera', 'united', 'xpnative', 'pulse', 'cosmo', 'lumen', 'yeti', 'superhero', 'winnative', 'sandstone', 'default']
+# TOP6 = style.master
 #一些函数要用到的
 yy = []
 for i in range(1970,2050):
@@ -44,8 +50,19 @@ list_National=('蒙古族','回族','藏族','维吾尔族','苗族','彝族','�
 list_Degree=("中专","初中","高中","专科","本科","硕士","博士")
 #构建GUI框架容器、标题、初始分辨率
 window = tk.Tk()
+
+
+
 window.title("个人简历模板基本信息部分")
 window.geometry("1000x1000")
+style = Style(theme = "sandstone") # 使用的主题名称
+window = style.master
+ft = tkFont.Font(family='Fixdsys', size=30, weight=tkFont.BOLD)
+
+tk.Label(window,text="个人简历模板填写",font=ft).grid(columnspan=5,sticky=N+S)
+
+
+
 Address = tk.StringVar()
 National = tk.StringVar()
 Birth_year = tk.StringVar()
@@ -54,6 +71,9 @@ Time_year = tk.StringVar()
 Time_year_second = tk.StringVar()
 Degree = tk.StringVar()
 school = tk.StringVar()
+Name = tk.StringVar()
+want = tk.StringVar()
+Professal = tk.StringVar()
 
 
 #RadioButton part & 初始化默认选择
@@ -88,19 +108,17 @@ button_Politic_Komsomolets = tk.Radiobutton(window,text='共青团员',variable=
 button_Politic_Communist = tk.Radiobutton(window,text='中共党员',variable=p,value=2,command=read_Pol_text) 
 
 #textbox part
-textbox_Name = tk.Text(window,height=1,width=15)
+textbox_Name = tk.Entry(window,width=15,textvariable=Name)
 textbox_Age = tk.Text(window,height=1,width=15)
 textbox_Phonenum = tk.Text(window,height=1,width=15)
 # textbox_Phonenum_get = textbox_Phonenum("1.0","end")
 textbox_School = tk.Entry(window,width=15,textvariable=school)
-textbox_Professal = tk.Text(window,height=1,width=15)
-textbox_want = tk.Text(window,width=15,height=1)
+textbox_Professal = tk.Entry(window,width=15,textvariable=Professal)
+textbox_want = tk.Entry(window,width=15,textvariable=want)
 textbox_School_2 = tk.Entry(window,width=15,textvariable=school,state='readonly')
-
 textbox_Education = tk.Text(window,height=3,width=15)
-textbox_Honor = tk.Entry(window,width=15)
- 
-textbox_Selfass = tk.Text(window,height=3,width=15)
+textbox_Honor = tk.Entry(window,width=15) 
+textbox_Selfass = tk.Text(window,height=3,width=50)
 #label part
 label_Name = tk.Label(window,text="姓名")
 label_Age = tk.Label(window,text="年龄")
@@ -134,6 +152,7 @@ Combobox_Degree = ttk.Combobox(window,width=12,height=10,textvariable=Degree)
 
 Combobox_Time_year = ttk.Combobox(window,width=12,height=10,textvariable=Time_year)
 Combobox_Time_year_2 = ttk.Combobox(window,width=12,height=10)
+
 #Combox data,可以进阶挂sql
 #各个combobox的数据
 Combobox_Address["value"] = city
@@ -180,13 +199,11 @@ button_addlabel = tk.Button(window,image=plus,command=add_label)
 def add():
     global window
     # 通过get()函数获得Text（input_txt）的输入内容
-    textbox_Name_get = textbox_Name.get("1.0","end")
-    label_Name_get = label_Name.cget("text")
-    label_Sex_get = label_Sex.cget("text")
+    textbox_Name_get = textbox_Name.get()
     # textbox_Age_get = textbox_Age.get("1.0","end")
     textbox_Phonenum_get = textbox_Phonenum.get("1.0","end")
     textbox_School_get = textbox_School.get()
-    textbox_Professal_get = textbox_Professal.get("1.0","end")
+    textbox_Professal_get = textbox_Professal.get()
     textbox_Honor_get = textbox_Honor.get()+Time_year.get()
     textbox_Selfass_get = textbox_Selfass.get("1.0","end")
     Combobox_Address_get = Address.get()
@@ -194,34 +211,22 @@ def add():
     Combobox_Birth_year_get = Birth_year.get()
     Combobox_Birth_month_get = Birth_month.get()
     Combobox_Degree_get = Degree.get()
-    textbox_want_get = textbox_want.get("1.0","end")
+    textbox_want_get = textbox_want.get()
    # button_Politic_People_get = button_Politic_People.get("1.0","end")
-    h = open('mytxtfile.txt', 'w', encoding='utf-8')
-    h.write(
-    label_Name.cget("text") +':' +
-    textbox_Name_get + '\n' + 
-
-    label_Sex.cget("text") +':' + 
-    textbox_sex_get +'\n' +
-
-    label_School.cget("text") +':' +
-    textbox_School_get + '\n' + 
-
-    label_Professal.cget("text") +':' +
-    textbox_Professal_get + '\n' +
-
-    label_Address.cget("text") +':' +
-    Combobox_Address_get +'\n'+
+    DataFrame = pd.DataFrame({
+    label_Name.cget("text"):textbox_Name_get,
+    label_Sex.cget("text"):textbox_sex_get, 
+    label_School.cget("text"):textbox_School_get,
+    label_Professal.cget("text"):textbox_Professal_get,
+    label_Address.cget("text"):Combobox_Address_get,
+    label_National.cget("text"):Combobox_National_get,
+    label_Degree.cget("text"):Combobox_Degree_get, 
+    label_want.cget('text'):textbox_want_get},index=[0])
     
-    label_National.cget("text") +':' +
-    Combobox_National_get + "\n" +
+    DataFrame.to_csv('t.csv',mode='a',index=False,sep=',',encoding='utf-8')
+    #收集的数据为“姓名”，“年龄”，“籍贯”，“学历”，“岗位期待”
+    #分析所得出的结果为：
 
-    label_Degree.cget("text") +':' +
-    Combobox_Degree_get + '\n' +
-
-    label_want.cget('text') + ':' +
-    textbox_want_get +'\n'
-    ) #添加到文件夹中的txt
     
     f = open(GEN_HTML,'w',encoding='utf-8')
     message = """
@@ -241,8 +246,8 @@ def add():
                 a:link {text-decoration:none};
                 a:hover {color:#FF00FF;}
         </style>
-            <body>
-                <table width="700" height="500" border="1" background="img/bacg.jpg" align="center">
+<body>
+    <table width="700" height="500" border="1" background="img/bacg.jpg" align="center">
                     
     <caption><h3>个人简历</h3></caption>
     <tr>
@@ -300,8 +305,8 @@ def add():
         </td>
     </tr>
 </table>
-        </body>
-    </head>
+</body>
+</head>
 </html>
     """%(textbox_Name_get,Combobox_Birth_year_get,Combobox_Birth_month_get,textbox_sex_get,
         selectFileName,Combobox_Degree_get,textbox_Professal_get,Combobox_National_get,
@@ -311,8 +316,8 @@ def add():
     f.write(message)
 
     webbrowser.open(GEN_HTML,new = 1) 
-    h.close()
-    result = showinfo('提示', '所填写内容已经保存至mytxtfile.txt文件内。')
+
+    result = showinfo('提示', '所填写内容已经保存至profile.html文件内。')
     print(f'提示: {result}')
     window.destroy()
 
@@ -321,12 +326,12 @@ button_next = tk.Button(text="生成",command=add)
 # button_next =filedialog.askopenfilename()
 
 #grid 布局
-submit_button.grid(row=1,column=4)
+
 label_Name.grid(row=1,column=0)
 textbox_Name.grid(row=1,column=1)
 label_Age.grid(row=1,column=2)
 textbox_Age.grid(row=1,column=3)
-
+submit_button.grid(row=1,column=4)
 
 label_Birth.grid(row=2,column=0)
 Combobox_Birth_year.grid(row=2,column=1)
@@ -371,12 +376,16 @@ textbox_Honor.grid(row=9,column=2)
 button_addlabel.grid(row=9,column=3)
 
 label_Selfass.grid(row=11,column=0)
-textbox_Selfass.grid(row=11,column=1)
+textbox_Selfass.grid(row=11,column=1,columnspan=3)
 
 button_next.grid(row=12,column=5)#按钮,等待hmtl
 label_tip1.grid(row=12,column=0)
 window.mainloop()
 
+
+
+
+#垃圾场，也许以后有用 :（
 # textbox_Name_get = textbox_Name.get("1.0","end")
 # # textbox_Age_get = textbox_Age.get("1.0","end")
 # # textbox_Phonenum_get = textbox_Phonenum.get("1.0","end")
